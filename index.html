@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>CRUD</title>
+      <!-- bootstrap css-->
+      <link
+         href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+         rel="stylesheet"
+         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+         crossorigin="anonymous"
+         />
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+      <style>
+         #add {
+         float: right;
+         }
+      </style>
+   </head>
+   <body>
+      <div class="container">
+         <div class="row mt-3">
+             <h3>CRUD OPERATION(without reloading page)</h3>
+            <div class="col">
+               <button
+                  type="button"
+                  data-bs-toggle="modal"
+                  data-bs-target="#addmodal"
+                  class="btn btn-sm btn-success float-end mb-2"
+                  >
+               Add user
+               </button>
+            </div>
+         </div>
+         <div class="row ">
+            <div class="col-lg-12 col-md-8 col-sm-12">
+               <div class="table-responsive">
+                  <table id="displaytable" class="table table-bordered table-striped shadow-lg">
+                     <thead>
+                        <tr>
+                           <th scope="col">#</th>
+                           <th scope="col">NAME</th>
+                           <th scope="col">EMAIL</th>
+                           <th scope="col">EDIT</th>
+                           <th scope="col">DELETE</th>
+                        </tr>
+                     </thead>
+                     <tbody id="append">
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!----MODAL FOR ADDING USER-->
+      <div
+         class="modal fade"
+         id="addmodal"
+         tabindex="-1"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true"
+         >
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Add user</h5>
+                  <button
+                     type="button"
+                     class="btn-close"
+                     data-bs-dismiss="modal"
+                     aria-label="Close"
+                     ></button>
+               </div>
+               <form class="myform" id="registerform">
+                  <div class="modal-body">
+                     <div class="col-lg-8 m-auto">
+                        <div class="form-group">
+                           <label>NAME</label>
+                           <input
+                              type="text"
+                              class="form-control"
+                              id="name"
+                              name="name"
+                              required
+                              autocomplete="off"
+                              />
+                        </div>
+                        <div class="form-group">
+                           <label>EMAIL</label>
+                           <input
+                              type="email"
+                              class="form-control"
+                              id="email"
+                              name="email"
+                              required
+                              autocomplete="off"
+                              />
+                        </div>
+                     </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="submit" id="reg" class="btn btn-primary">Add user</button>
+                     <button
+                        type="reset"
+                        class="btn btn-secondary"
+                        >
+                     Reset
+                     </button>
+                  </div>
+            </div>
+            </form>
+         </div>
+      </div>
+      <!-----------------------------------------------------------EDIT MODAL--------------------------------------------------------------->
+      <div
+         class="modal fade"
+         id="editmodal"
+         tabindex="-1"
+         aria-labelledby="exampleModalLabel"
+         aria-hidden="true"
+         >
+         <div class="modal-dialog">
+            <div class="modal-content">
+               <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Edit user</h5>
+                  <button
+                     type="button"
+                     class="btn-close"
+                     data-bs-dismiss="modal"
+                     aria-label="Close"
+                     ></button>
+               </div>
+               <form class="myform" id="editform">
+                  <div class="modal-body">
+                     <div class="col-lg-8 m-auto">
+                        <div class="form-group">
+                           <input type="hidden" id="upid" />
+                           <label>NAME</label>
+                           <input
+                              type="text"
+                              class="form-control"
+                              id="ename"
+                              name="ename"
+                              required
+                              autocomplete="off"
+                              />
+                        </div>
+                        <div class="form-group">
+                           <label>EMAIL</label>
+                           <input
+                              type="email"
+                              class="form-control"
+                              id="eemail"
+                              name="eemail"
+                              required
+                              autocomplete="off"
+                              />
+                        </div>
+                     </div>
+                  </div>
+                  <div class="modal-footer">
+                     <button type="submit" id="update" class="btn btn-primary">Update user</button>
+                     <button
+                        type="reset"
+                        class="btn btn-secondary"
+                        >
+                     Reset
+                     </button>
+                  </div>
+            </div>
+            </form>
+         </div>
+      </div>
+      <script>
+
+          //main scripting starts here
+         $(document).ready(function () {
+             display();
+             $("#reg").click(function(e){
+                 e.preventDefault();
+                 var name=$("#name").val();
+                 var email=$('#email').val();
+                 if(name==""){
+                     alert('name required')
+                     return false;
+                 }
+                 if(email==""){
+                     alert('email required')
+                     return false;
+                 }
+                 else{
+                    register(name,email);
+                 //    display();
+         
+             }
+         
+         })
+                    
+         });
+
+         //register function 
+         
+         function register(name,email){
+         
+             $.ajax({
+             url: 'reg.php',
+             type: 'POST',
+         
+             data:{name:name,email:email},
+             
+             success:function(response){
+                 // if(response==1){
+         
+                 //     alert('user already registred');
+                 // }
+                 // else{
+                 //     alert('user registered successfully');
+         
+         
+                 // }
+         
+                 alert(response);
+                 $("#registerform").trigger("reset");
+                 $('#addmodal').modal('hide');
+                 display();
+         
+             }
+         });
+         }
+
+        // function display
+         function display(){
+             var display='true';
+             $.ajax({
+             url: 'display.php',
+             type: 'POST',
+             data:{display:display},
+             success:function(response){
+                 $("#append").html(response);
+         
+             }
+         
+         });
+         
+         }
+
+         //function edit 
+         
+         function Edit(editid){
+             $('#editmodal').modal('show');
+             $.ajax({
+             url: 'edit.php',
+             type: 'POST',
+             data:{eid:editid},
+             dataType:"JSON",
+             success:function(data){
+                 $('#upid').val(data.id);
+                 $('#ename').val(data.name);
+                 $('#eemail').val(data.email);
+                
+                 
+         
+             }
+         
+         });
+         
+         }
+
+         //function delete 
+         
+         function Delete(deleteid)  { 
+         
+             var con=confirm('Are you sure u wanna delete this user??')
+             if(con==true){
+                 $.ajax({
+             url: 'delete.php',
+             type: 'POST',
+             data:{did:deleteid},
+             success:function(response){
+                 // $("#append").html(response);
+                 alert('user deleted sucessfully');
+                 display();
+             }
+         
+         });
+                 
+             }
+             else{
+         
+                 return false;
+             }
+         
+          }
+         
+         //function update 
+          $("#update").click(function(e){
+                 e.preventDefault();
+                 var eeid=$('#upid').val();
+                 var ename=$("#ename").val();
+                 var eemail=$('#eemail').val();
+                 if(ename==""){
+                     alert('name required')
+                     return false;
+                 }
+                 if(eemail==""){
+                     alert('email required')
+                     return false;
+                 }
+                 else{
+                    Update(ename,eemail,eeid);
+                 //    display();
+         
+             }
+         
+         })
+         
+         function Update(ename,eemail,eeid){
+         
+         $.ajax({
+         url: 'update.php',
+         type: 'POST',
+         
+         data:{id:eeid,name:ename,email:eemail},
+         
+         success:function(response){
+
+            if(response==2){
+
+                alert('No updates made');
+                $("#editform").trigger("reset");
+                $('#editmodal').modal('hide');
+                display();
+
+            }
+            else{
+        //  if(response==1){
+         
+        //      alert('user already registred');
+        //  }
+        //  else{
+        //      alert('user registered successfully');
+         
+         
+        //  }
+         
+         alert(response);
+         
+
+
+         $("#editform").trigger("reset");
+         $('#editmodal').modal('hide');
+         display();
+         
+         }
+        }
+         });
+         }
+         
+      </script>
+      <!-- bootstrap javascript-->
+      <script
+         src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+         integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+         crossorigin="anonymous"
+         ></script>
+   </body>
+</html>
