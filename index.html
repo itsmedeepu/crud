@@ -205,7 +205,7 @@
          function register(name,email){
          
              $.ajax({
-             url: 'reg.php',
+             url: 'assets/reg.php',
              type: 'POST',
          
              data:{name:name,email:email},
@@ -234,7 +234,7 @@
          function display(){
              var display='true';
              $.ajax({
-             url: 'display.php',
+             url: 'assets/display.php',
              type: 'POST',
              data:{display:display},
              success:function(response){
@@ -251,7 +251,7 @@
          function Edit(editid){
              $('#editmodal').modal('show');
              $.ajax({
-             url: 'edit.php',
+             url: 'assets/edit.php',
              type: 'POST',
              data:{eid:editid},
              dataType:"JSON",
@@ -275,7 +275,7 @@
              var con=confirm('Are you sure u wanna delete this user??')
              if(con==true){
                  $.ajax({
-             url: 'delete.php',
+             url: 'assets/delete.php',
              type: 'POST',
              data:{did:deleteid},
              success:function(response){
@@ -319,7 +319,7 @@
          function Update(ename,eemail,eeid){
          
          $.ajax({
-         url: 'update.php',
+         url: 'assets/update.php',
          type: 'POST',
          
          data:{id:eeid,name:ename,email:eemail},
